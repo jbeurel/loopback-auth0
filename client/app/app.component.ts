@@ -1,8 +1,13 @@
 import { Component } from '@angular/core';
 
+import { Auth } from './auth.service'
+
 @Component({
   selector: 'my-app',
-  template: '<h1>My First Angular App</h1>'
+  providers: [ Auth ],
+  templateUrl: './app.template.html'
 })
 
-export class AppComponent { }
+export class AppComponent {
+  constructor(private auth: Auth) {}
+}
