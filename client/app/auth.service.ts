@@ -15,11 +15,20 @@ export class Auth {
   constructor(private userApi: UserApi) {
     // Add callback for lock `authenticated` event
     this.lock.on('authenticated', (authResult) => {
-      localStorage.setItem('id_token', authResult.idToken);
-      this.userApi.auth0(authResult.idToken)
-        .subscribe((data) => {
-          console.log('coucou data', data);
-        })
+
+      this.lock.getProfile(authResult.idToken, (error, profile ) => {
+        if (error) {
+          return;
+        }
+
+        localStorage.setItem('id_token', authResult.idToken);
+        localStorage.setItem('profile', JSON.stringify(profile));
+
+        this.userApi.auth0(authResult.idToken)
+          .subscribe((data) => {
+            console.log('coucou data', data);
+          });
+      });
     });
   }
 
