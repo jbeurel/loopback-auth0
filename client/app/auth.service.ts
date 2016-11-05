@@ -16,7 +16,7 @@ export class Auth {
     // Add callback for lock `authenticated` event
     this.lock.on('authenticated', (authResult) => {
       localStorage.setItem('id_token', authResult.idToken);
-      this.userApi.login({email: 'email', password: 'password'}, 'user')
+      this.userApi.auth0(authResult.idToken)
         .subscribe((data) => {
           console.log('coucou data', data);
         })
