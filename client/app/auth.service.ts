@@ -1,6 +1,8 @@
-import { Injectable }      from '@angular/core';
+import { Injectable } from '@angular/core';
 import { tokenNotExpired } from 'angular2-jwt';
-import { myConfig }        from './auth.config';
+
+import { myConfig } from './auth.config';
+import { UserApi } from "./shared/sdk/services/custom/User";
 
 // Avoid name not found warnings
 declare var Auth0Lock: any;
@@ -10,10 +12,14 @@ export class Auth {
   // Configure Auth0
   lock = new Auth0Lock(myConfig.clientID, myConfig.domain, {});
 
-  constructor() {
+  constructor(private userApi: UserApi) {
     // Add callback for lock `authenticated` event
     this.lock.on('authenticated', (authResult) => {
       localStorage.setItem('id_token', authResult.idToken);
+      this.userApi.login({email: 'email', password: 'password'}, 'user')
+        .subscribe((data) => {
+          console.log('coucou data', data);
+        })
     });
   }
 
