@@ -4,8 +4,8 @@
   "main": "server/server.js",
   "scripts": {
     "lint": "eslint .",
-    "start": "node .",
-    "posttest": "npm run lint && nsp check"
+    "build:sdk": "./node_modules/.bin/lb-sdk server/server.js client/app/shared/sdk -w enabled",
+    "start": "node ."
   },
   "dependencies": {
     "@angular/common": "~2.1.1",
@@ -17,6 +17,7 @@
     "@angular/platform-browser-dynamic": "~2.1.1",
     "@angular/router": "~3.1.1",
     "@angular/upgrade": "~2.1.1",
+    "@mean-expert/loopback-sdk-builder": "^2.1.0-beta.15",
     "angular-in-memory-web-api": "~0.1.13",
     "angular2-jwt": "^0.1.25",
     "angular2-template-loader": "^0.6.0",
