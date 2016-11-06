@@ -21,6 +21,7 @@
     "angular-in-memory-web-api": "~0.1.13",
     "angular2-jwt": "^0.1.25",
     "angular2-template-loader": "^0.6.0",
+    "auth0": "^2.5.0",
     "auth0-lock": "^10.5.1",
     "compression": "^1.0.3",
     "core-js": "^2.4.1",
