@@ -5,10 +5,10 @@ var debug = require('debug')('loopback:app:user');
 var jwt = require('jsonwebtoken');
 
 module.exports = function(User) {
-  User.auth0 = function (idToken, done) {
+  User.auth0 = function (authResult, done) {
     var secret = 'LetJoLiam';
 
-    jwt.verify(idToken, secret, function(err, decoded) {
+    jwt.verify(authResult.idToken, secret, function(err, decoded) {
       if (err) {
         debug(err);
       }
@@ -17,8 +17,9 @@ module.exports = function(User) {
   };
 
   User.remoteMethod('auth0', {
-      accepts: {arg: 'idToken', type: 'string'},
-      returns: {arg: 'result', type: 'string'}
+      accepts: {arg: 'authResult', type: 'Object', http: { source: 'body' }, required: true},
+      returns: {arg: 'user', type: 'Object', root: true},
+      http: {verb: 'post'}
     }
   );
 };

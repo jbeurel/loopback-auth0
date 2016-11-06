@@ -24,7 +24,7 @@ export class Auth {
         localStorage.setItem('id_token', authResult.idToken);
         localStorage.setItem('profile', JSON.stringify(profile));
 
-        this.userApi.auth0(authResult.idToken)
+        this.userApi.auth0({authResult: authResult})
           .subscribe((data) => {
             console.log('coucou data', data);
           });
