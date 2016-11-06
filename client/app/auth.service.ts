@@ -16,18 +16,10 @@ export class Auth {
     // Add callback for lock `authenticated` event
     this.lock.on('authenticated', (authResult) => {
 
-      this.lock.getProfile(authResult.idToken, (error, profile ) => {
-        if (error) {
-          return;
-        }
-
+      this.userApi.auth0(authResult)
+      .subscribe((userInfo) => {
         localStorage.setItem('id_token', authResult.idToken);
-        localStorage.setItem('profile', JSON.stringify(profile));
-
-        this.userApi.auth0(authResult)
-          .subscribe((data) => {
-            console.log('coucou data', data);
-          });
+        localStorage.setItem('user_info', JSON.stringify(userInfo));
       });
     });
   }
@@ -45,6 +37,6 @@ export class Auth {
 
   public logout() {
     localStorage.removeItem('id_token');
-    localStorage.removeItem('profile');
+    localStorage.removeItem('user_info');
   };
 }
