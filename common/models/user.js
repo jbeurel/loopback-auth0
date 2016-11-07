@@ -44,20 +44,23 @@ module.exports = function(User) {
 
   User.validatesUniquenessOf('user_id');
 
+  delete User.validations.password;
+
   User.auth0 = function (authResult, done) {
+    //TODO: Move this secret in a non versioned config file
     var secret = 'LetJoLiam';
 
     jwt.verify(authResult.idToken, secret, function(err, decoded) {
       if (err) {
         debug(err);
+        return done(err);
       }
 
       auth0.users.getInfo(authResult.accessToken)
       .then(function(userInfo) {
-        done(null, JSON.parse(userInfo));
-      }).catch(function(err) {
-        done(err);
-      });
+        var user = JSON.parse(userInfo);
+        User.upsertWithWhere({'user_id': user.user_id}, user, done);
+      }).catch(done);
     });
   };
 
