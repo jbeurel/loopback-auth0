@@ -4,6 +4,7 @@ var debug = require('debug')('loopback:app:user');
 
 var AuthenticationClient = require('auth0').AuthenticationClient;
 var jwt = require('jsonwebtoken');
+var g = require('strong-globalize')();
 var request = require('request');
 
 
@@ -14,7 +15,7 @@ var auth0 = new AuthenticationClient({
 
 module.exports = function(User) {
 
-  User.disableRemoteMethod("login", true);
+  // User.disableRemoteMethod("login", true);
   User.disableRemoteMethod("upsert", true);
   User.disableRemoteMethod("create", true);
   User.disableRemoteMethod("createOrUpdate", true);
@@ -49,6 +50,9 @@ module.exports = function(User) {
   User.auth0 = function (authResult, done) {
     //TODO: Move this secret in a non versioned config file
     var secret = 'LetJoLiam';
+    var defaultError = new Error(g.f('login failed'));
+    defaultError.statusCode = 401;
+    defaultError.code = 'LOGIN_FAILED';
 
     jwt.verify(authResult.idToken, secret, function(err, decoded) {
       if (err) {
@@ -59,7 +63,17 @@ module.exports = function(User) {
       auth0.users.getInfo(authResult.accessToken)
       .then(function(userInfo) {
         var user = JSON.parse(userInfo);
-        User.upsertWithWhere({'user_id': user.user_id}, user, done);
+        User.upsertWithWhere({'user_id': user.user_id}, user, function (err, user) {
+          if (err) {
+            debug('An error is reported from upsert function: %j', err);
+            return fn(defaultError);
+          }
+
+          user.createAccessToken(36000, function(err, token) {
+            token.__data.user = user;
+            done (err, token);
+          });
+        });
       }).catch(done);
     });
   };
