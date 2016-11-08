@@ -16,10 +16,9 @@ export class Auth {
     // Add callback for lock `authenticated` event
     this.lock.on('authenticated', (authResult) => {
 
-      this.userApi.auth0(authResult)
-      .subscribe((userInfo) => {
+      this.userApi.login(authResult)
+      .subscribe((token) => {
         localStorage.setItem('id_token', authResult.idToken);
-        localStorage.setItem('user_info', JSON.stringify(userInfo));
       });
     });
   }

@@ -47,20 +47,20 @@ module.exports = function(User) {
 
   delete User.validations.password;
 
-  User.auth0 = function (authResult, done) {
+  User.login = function (credentials, include, done) {
     //TODO: Move this secret in a non versioned config file
     var secret = 'LetJoLiam';
     var defaultError = new Error(g.f('login failed'));
     defaultError.statusCode = 401;
     defaultError.code = 'LOGIN_FAILED';
 
-    jwt.verify(authResult.idToken, secret, function(err, decoded) {
+    jwt.verify(credentials.idToken, secret, function(err, decoded) {
       if (err) {
         debug(err);
         return done(err);
       }
 
-      auth0.users.getInfo(authResult.accessToken)
+      auth0.users.getInfo(credentials.accessToken)
       .then(function(userInfo) {
         var user = JSON.parse(userInfo);
         User.upsertWithWhere({'user_id': user.user_id}, user, function (err, user) {
@@ -77,11 +77,4 @@ module.exports = function(User) {
       }).catch(done);
     });
   };
-
-  User.remoteMethod('auth0', {
-      accepts: {arg: 'authResult', type: 'Object', http: { source: 'body' }, required: true},
-      returns: {arg: 'user', type: 'Object', root: true},
-      http: {verb: 'post'}
-    }
-  );
 };
