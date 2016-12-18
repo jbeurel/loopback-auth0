@@ -15,7 +15,7 @@ npm run build:sdk
 Build client assets (js, css)
 
 ```
-webpack
+./node_modules/.bin/webpack
 ```
 
 Launch node server
