@@ -5,7 +5,7 @@ import { AUTH_PROVIDERS } from 'angular2-jwt';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home.component';
 import { routing, appRoutingProviders } from './app.routes';
-import { SDKModule } from './shared/sdk/index';
+import { SDKBrowserModule } from './shared/sdk/index';
 
 @NgModule({
   declarations: [
@@ -19,7 +19,7 @@ import { SDKModule } from './shared/sdk/index';
   imports: [
     BrowserModule,
     routing,
-    SDKModule.forRoot()
+    SDKBrowserModule.forRoot()
   ],
   bootstrap: [AppComponent]
 })
